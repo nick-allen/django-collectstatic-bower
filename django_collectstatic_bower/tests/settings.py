@@ -11,4 +11,4 @@ SECRET_KEY = os.urandom(40)
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(os.getcwd(), 'static')
 
-BOWER_CMD = '/usr/local/bin/bower'
+MEDIA_URL = '/media/'

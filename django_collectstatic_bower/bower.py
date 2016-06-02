@@ -8,7 +8,11 @@ from django.conf import settings
 
 def get_bower_executable_path():
 	"""Find bower executable"""
-	return getattr(settings, 'BOWER_CMD', shutil.which('bower'))
+	try:
+		return getattr(settings, 'BOWER_CMD')
+	except AttributeError:
+		return shutil.which('bower')
+
 
 def get_bower_rc_path():
 	"""Find .bowerrc file"""
@@ -17,12 +21,6 @@ def get_bower_rc_path():
 		'.bowerrc'
 	))
 
-def get_bower_json_path():
-	"""Find bower.json file"""
-	return getattr(settings, 'BOWER_JSON_FILE', os.path.join(
-		os.getcwd(),
-		'bower.json'
-	))
 
 def get_bower_components_path():
 	"""Returns bower components path"""
@@ -38,6 +36,7 @@ def get_bower_components_path():
 
 	return os.path.abspath(path)
 
+
 def load_bower_rc():
 	"""Returns parsed .bowerrc file"""
 	try:
@@ -46,13 +45,6 @@ def load_bower_rc():
 	except Exception:
 		return None
 
-def load_bower_json():
-	"""Returns parsed bower.json file"""
-	try:
-		with open(get_bower_json_path()) as bower_json:
-			return json.load(bower_json)
-	except Exception:
-		return None
 
 def bower(*args, cwd=None):
 	"""Runs bower with provided args"""
