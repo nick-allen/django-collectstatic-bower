@@ -1,6 +1,6 @@
 """Tests bower adapter"""
 import os
-from unittest.mock import patch, Mock
+import mock
 
 from django.test import override_settings
 from nose.tools import assert_equal
@@ -8,8 +8,8 @@ from nose.tools import assert_equal
 from django_collectstatic_bower import bower
 
 
-@patch('django_collectstatic_bower.bower.get_bower_executable_path')
-@patch('subprocess.Popen')
+@mock.patch('django_collectstatic_bower.bower.get_bower_executable_path')
+@mock.patch('subprocess.Popen')
 def test_bower_subprocess(subprocess_mock, exe_path_mock):
 	"""Tests that the provided bower executable is launched in a subprocess"""
 	exe_path = '/path/to/bower'
@@ -17,7 +17,7 @@ def test_bower_subprocess(subprocess_mock, exe_path_mock):
 	cwd = os.getcwd()
 
 	exe_path_mock.return_value = exe_path
-	proc_mock = Mock()
+	proc_mock = mock.Mock()
 	proc_mock.configure_mock(**{
 		'wait': lambda: None,
 		'returncode': 0
@@ -36,7 +36,7 @@ def test_bower_get_executable():
 		assert_equal(bower.get_bower_executable_path(), '/override/path')
 
 	with override_settings():
-		with patch('django_collectstatic_bower.bower.shutil.which') as which:
+		with mock.patch('django_collectstatic_bower.bower.which') as which:
 			which.return_value = '/discovered/path'
 			assert_equal(bower.get_bower_executable_path(), '/discovered/path')
 
@@ -53,7 +53,7 @@ def test_bower_get_rc_file():
 def test_bower_get_component_path():
 	"""Tests that the directory bower installs to is discovered correctly"""
 
-	with patch('django_collectstatic_bower.bower.load_bower_rc') as rc:
+	with mock.patch('django_collectstatic_bower.bower.load_bower_rc') as rc:
 		rc.return_value = {'directory': '/path/to/components'}
 
 		assert_equal(bower.get_bower_components_path(), '/path/to/components')
