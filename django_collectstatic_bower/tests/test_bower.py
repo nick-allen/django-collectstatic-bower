@@ -41,12 +41,19 @@ def test_bower_get_executable():
 			assert_equal(bower.get_bower_executable_path(), '/discovered/path')
 
 
-def test_bower_rc():
-	"""Tests that the .bowerrc file can be parsed"""
+def test_bower_get_rc_file():
+	"""Tests that the .bowerrc file is discoverable and usable as a JSON object"""
+	with override_settings(BOWER_RC_FILE='/path/to/rc'):
+		assert_equal(bower.get_bower_rc_path(), '/path/to/rc')
+
+	with override_settings():
+		assert_equal(bower.get_bower_rc_path(), os.getcwd() + '/.bowerrc')
 
 
 def test_bower_get_component_path():
 	"""Tests that the directory bower installs to is discovered correctly"""
 
+	with patch('django_collectstatic_bower.bower.load_bower_rc') as rc:
+		rc.return_value = {'directory': '/path/to/components'}
 
-
+		assert_equal(bower.get_bower_components_path(), '/path/to/components')
