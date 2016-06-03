@@ -8,6 +8,8 @@ Respects .bowerrc directory config when collecting files
 
 Tested on python 2.7 and 3.5
 
+Note: The finder requires the Bower executable be installed already
+
 Install
 ------------------
 
